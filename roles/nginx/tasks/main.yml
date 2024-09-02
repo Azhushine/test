@@ -1,0 +1,17 @@
+---
+ - name: 安装httpd
+   yum: name=httpd,httpd-devel state=present
+
+ - name: 同步httpd配置文件
+   template: src=/etc/ansible/roles/nginx/templates/httpd.conf dest=/etc/httpd/conf/httpd.conf
+
+   notify: restart httpd
+
+ - name: 同步主页文件
+   copy: src=/etc/ansible/roles/nginx/files/index.html dest=/var/www/html/index.html
+
+ - name: 同步php测试页
+   copy: src=/etc/ansible/roles/nginx/files/test.php dest=/var/www/html/test.php
+
+ - name: 启动httpd并开机自启动
+   service: name=httpd state=started enabled=yes
