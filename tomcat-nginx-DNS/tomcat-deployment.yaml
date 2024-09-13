@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tomcat-deployment
+  labels:
+    app: tomcat
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tomcat
+  template:
+    metadata:
+      labels:
+        app: tomcat
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: env
+                operator: In
+                values:
+                - tomcat
+      containers:
+      - name: tomcat
+        image: tomcat:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: tomcat-volume
+          mountPath: /usr/local/tomcat/webapps
+      volumes:
+      - name: tomcat-volume
+        emptyDir: {}
+
